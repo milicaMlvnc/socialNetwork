@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "grpcPost";
+
+// ---------- PostService ----------
+
+message PostProto {
+	int32 id = 1;
+	string postText = 2;
+	string title = 3;
+	string usern = 4;
+}
+
+message PostList {
+  repeated PostProto posts = 1;
+}
+
+message NoParamRequest {}
+
+service PostService {
+  rpc GetOne(PostProto) returns  (PostProto);
+
+  rpc GetAll(NoParamRequest) returns (PostList);
+
+	rpc SavePost(PostProto) returns (PostProto);
+	
+	rpc DeletePost(PostProto) returns (PostProto);
+	
+	rpc GetPostsForUserFriends(PostProto) returns (PostList);
+}
+
+// ---------- UserMessageService ----------
+
+message UserProto {
+  int32 id = 1;
+  string mail = 2;
+  string name = 3;
+  string pass = 4;
+  string username = 5;
+}
+
+message UserMessageProto {
+  int32 id = 1;
+  string textMessage = 2;
+  UserProto userSender = 3;
+  UserProto userReceiver = 4;
+  string date = 5;
+}
+
+message UserMessageList {
+  repeated UserMessageProto messages = 1;
+}
+
+message UserId {
+  int32 id = 1;
+  string username = 2;
+}
+
+service UserMessageService {
+  rpc send(UserMessageProto) returns (UserMessageProto);
+
+  rpc getConversation(UserId) returns (UserMessageList);
+}
+
+// ---------- PostLikeService ----------
+
+message PostLikeProto {
+  string date = 1;
+  PostProto post = 2;
+  UserProto user = 3;
+}
+
+message PostLikeToDelete {
+  int32 postId = 1;
+  int32 userId = 2;
+}
+
+service PostLikeService {
+  rpc save(PostLikeProto) returns (PostLikeProto);
+
+  rpc delete(PostLikeToDelete) returns (NoParamRequest);
+}
+
+// ---------- PostCommentService ----------
+
+message PostCommentProto {
+  int32 id = 1;
+  string commentText = 2;
+  string date = 3;
+  PostProto post = 4;
+  UserProto user = 5;
+}
+
+message PostCommentDelete {
+  int32 id = 1;
+}
+
+message PostId {
+  int32 id = 1;
+}
+
+message AllCommentsForPost {
+  repeated PostCommentProto comments = 1;
+}
+
+service PostCommentService {
+  rpc save(PostCommentProto) returns (PostCommentProto);
+
+  rpc delete(PostCommentDelete) returns (NoParamRequest);
+
+  rpc allCommentsForPost(PostId) returns (AllCommentsForPost);
+}

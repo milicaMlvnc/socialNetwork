@@ -1,0 +1,49 @@
+type Query {
+  getOnePost(id: ID): Post
+  getPostsForUserFriends: [Post]!
+  getAllPosts: [Post]!
+  allCommentsForPost(postId: ID): [PostComment]!
+  getConversation(userId: ID): [UserMessage]
+}
+
+type Mutation {
+	deletePost(id: ID!): Boolean!
+	save(id: ID, postText: String, title: String): Post
+	sendMessage(textMessage: String, userReceiverId: ID): UserMessage
+	savePostComment(id: ID, commentText: String, postId: ID): PostComment
+	deletePostComment(id: ID): Boolean!
+	savePostLike(postId: ID): PostLike
+	deletePostLike(postId: ID): Boolean!
+}
+
+type Post {
+  id: String
+  postText: String
+  title: String
+}
+
+type User {
+	id: String
+	mail: String
+	pass: String
+	username: String
+	name: String
+}
+
+type UserMessage {
+	textMessage: String
+	userSender: User
+	userReceiver: User
+}
+
+type PostComment {
+  id: ID
+  commentText: String
+  post: Post
+  user: User
+}
+
+type PostLike {
+	post: Post
+	user: User
+}
